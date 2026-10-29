@@ -1,0 +1,45 @@
+python
+import streamlit as str
+
+# 1. Configuración de credenciales dummy (Usuario: admin / Contraseña: 1234)
+USER_DUMMY = "admin"
+PASSWORD_DUMMY = "1234"
+
+# 2. Inicializar el estado de la sesión para el login si no existe
+if "logged_in" not in str.session_state:
+    str.session_state.logged_in = False
+
+# Función para validar las credenciales
+def check_login(username, password):
+    if username == USER_DUMMY and password == PASSWORD_DUMMY:
+        str.session_state.logged_in = True
+        str.rerun()  # Recarga la página para mostrar el contenido protegido
+    else:
+        str.error("Usuario o contraseña incorrectos")
+
+# Función para cerrar sesión
+def logout():
+    str.session_state.logged_in = False
+    str.rerun()
+
+# 3. Renderizar la interfaz según el estado de autenticación
+if not str.session_state.logged_in:
+    # --- PANTALLA DE LOGIN ---
+    str.title("🔑 Iniciar Sesión")
+    
+    with str.form("login_form"):
+        username_input = str.text_input("Usuario")
+        password_input = str.text_input("Contraseña", type="password")
+        submit_button = str.form_submit_button("Ingresar")
+        
+        if submit_button:
+            check_login(username_input, password_input)
+else:
+    # --- PANTALLA CONTENIDO PRINCIPAL (PROTEGIDO) ---
+    str.sidebar.success(f"Bienvenido, {USER_DUMMY}")
+    if str.sidebar.button("Cerrar Sesión"):
+        logout()
+        
+    str.title("🚀 Mi Aplicación Protegida")
+    str.write("¡Felicidades! Has ingresado correctamente con tus credenciales dummy.")
+    str.info("Este contenido solo es visible para usuarios autenticados.")
